@@ -1,0 +1,167 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<!-- from output.jsbin.com/pejohi -->
+  <script src="http://www.visjs.org/dist/vis.js"></script>
+  <link href="http://www.visjs.org/dist/vis.css" rel="stylesheet" type="text/css" />
+  <style type="text/css">
+    html, body {
+      height: 100%;
+      margin: 0px;
+    }
+    .graph {
+      width: 100%;
+      height: 100%;
+    }  </style>
+</head>
+<body>
+
+<div class="graph" id="visualization1"></div>
+<!-- <button onclick="javascript:action()">Click me</button> -->
+
+<script type="text/javascript">
+  
+  var action = function() {
+    var container = document.getElementById("visualization");
+    container.parentNode.removeChild(container);
+  }
+
+  var nodes = new vis.DataSet([
+      {"id": 324, "label": "name:FONDATION FOURVIERE", "group": "entity", "title": "name:FONDATION FOURVIERE"}, 
+      {"id": 323, "label": "number:FR7616807004003614486821129", "group": "acc", "title": "number:FR7616807004003614486821129"}, {"id": 289, "label": "number:CH7209000000913720032", "group": "acc", "title": "number:CH7209000000913720032"}, {"id": 287, "label": "number:IT16J0760105138209130909133", "group": "acc", "title": "number:IT16J0760105138209130909133"}, {"id": 301, "label": "number:BE50068220732318", "group": "acc", "title": "number:BE50068220732318"}, {"id": 299, "label": "number:DE45200411440660387200", "group": "acc", "title": "number:DE45200411440660387200"}, {"id": 314, "label": "name:CHARLOTTE SPARRE FAUQUET", "group": "entity", "title": "name:CHARLOTTE SPARRE FAUQUET"}, {"id": 313, "label": "number:FR7630003035420005025764169", "group": "acc", "title": "number:FR7630003035420005025764169"}, {"id": 273, "label": "number:FR7610278060470002073300268", "group": "acc", "title": "number:FR7610278060470002073300268"}, {"id": 276, "label": "name:DRIG SOLUCOES RESIDENCIAIS", "group": "entity", "title": "name:DRIG SOLUCOES RESIDENCIAIS"}, {"id": 275, "label": "number:PT50001000005398157000127", "group": "acc", "title": "number:PT50001000005398157000127"}, {"id": 300, "label": "name:HOMANN SCHNEIDER GBR", "group": "entity", "title": "name:HOMANN SCHNEIDER GBR"}, {"id": 292, "label": "name:ROBIN SCHULZ", "group": "entity", "title": "name:ROBIN SCHULZ"}, {"id": 291, "label": "number:DE86259501300034739596", "group": "acc", "title": "number:DE86259501300034739596"}, {"id": 297, "label": "number:IT64L0760103400001031844523", "group": "acc", "title": "number:IT64L0760103400001031844523"}, {"id": 317, "label": "number:FR7613606000294630906449652", "group": "acc", "title": "number:FR7613606000294630906449652"}, {"id": 277, "label": "number:FR7640618803100004008064528", "group": "acc", "title": "number:FR7640618803100004008064528"}, {"id": 264, "label": "number:0000010241", "group": "acc", "title": "number:0000010241"}, {"id": 329, "label": "number:FR7610278360230001095800183", "group": "acc", "title": "number:FR7610278360230001095800183"}, {"id": 327, "label": "number:ES6401280068100100003937", "group": "acc", "title": "number:ES6401280068100100003937"}, {"id": 325, "label": "number:NL68INGB0007883441", "group": "acc", "title": "number:NL68INGB0007883441"}, {"id": 279, "label": "number:FR7630003043130002000002019", "group": "acc", "title": "number:FR7630003043130002000002019"}, {"id": 281, "label": "number:IT02S0872820900000000033851", "group": "acc", "title": "number:IT02S0872820900000000033851"}, {"id": 283, "label": "number:ES7601829903150206304990", "group": "acc", "title": "number:ES7601829903150206304990"}, {"id": 285, "label": "number:IT66J0335967684510700172434", "group": "acc", "title": "number:IT66J0335967684510700172434"}, {"id": 293, "label": "number:DE05100110012622946266", "group": "acc", "title": "number:DE05100110012622946266"}, {"id": 295, "label": "number:DK7850780001185116", "group": "acc", "title": "number:DK7850780001185116"}, {"id": 303, "label": "number:DE78280602280203883801", "group": "acc", "title": "number:DE78280602280203883801"}, {"id": 305, "label": "number:GB27BARC20789889637944", "group": "acc", "title": "number:GB27BARC20789889637944"}, {"id": 307, "label": "number:DE59764600150007874600", "group": "acc", "title": "number:DE59764600150007874600"}, {"id": 309, "label": "number:FR7630003030500012036879848", "group": "acc", "title": "number:FR7630003030500012036879848"}, {"id": 311, "label": "number:FR7615135090170800171531061", "group": "acc", "title": "number:FR7615135090170800171531061"}, {"id": 315, "label": "number:FR7630004014640001005720169", "group": "acc", "title": "number:FR7630004014640001005720169"}, {"id": 319, "label": "number:IE61AIBK93338497493173", "group": "acc", "title": "number:IE61AIBK93338497493173"}, {"id": 321, "label": "number:FR7616598000010423778000187", "group": "acc", "title": "number:FR7616598000010423778000187"}, {"id": 330, "label": "name:FLORE LARRAZET STUDIO WALKIE TALKIE", "group": "entity", "title": "name:FLORE LARRAZET STUDIO WALKIE TALKIE"}, {"id": 333, "label": "name:F3E", "group": "entity", "title": "name:F3E"}, {"id": 332, "label": "number:28334205", "group": "acc", "title": "number:28334205"}, {"id": 318, "label": "name:ROBOBOX", "group": "entity", "title": "name:ROBOBOX"}, {"id": 296, "label": "name:ORGANICUP APS", "group": "entity", "title": "name:ORGANICUP APS"}, {"id": 312, "label": "name:INNOVATION TECHNOLOGY BEVERAGE", "group": "entity", "title": "name:INNOVATION TECHNOLOGY BEVERAGE"}, {"id": 306, "label": "name:BLEEP LIMITED", "group": "entity", "title": "name:BLEEP LIMITED"}, {"id": 298, "label": "name:DREAMUP S R L S", "group": "entity", "title": "name:DREAMUP S R L S"}, {"id": 302, "label": "name:BHAKTIVEDANTA LIBRARY SERVICES ASBL", "group": "entity", "title": "name:BHAKTIVEDANTA LIBRARY SERVICES ASBL"}, {"id": 326, "label": "name:TOLGAHAN DOGAN", "group": "entity", "title": "name:TOLGAHAN DOGAN"}, {"id": 290, "label": "name:DOTWORLD", "group": "entity", "title": "name:DOTWORLD"}, {"id": 331, "label": "number:0000012125", "group": "acc", "title": "number:0000012125"}, {"id": 310, "label": "name:GAUCHERE", "group": "entity", "title": "name:GAUCHERE"}, {"id": 322, "label": "name:IBRAHIMA DIALLO", "group": "entity", "title": "name:IBRAHIMA DIALLO"}, {"id": 294, "label": "name:TONY DI MICHELE", "group": "entity", "title": "name:TONY DI MICHELE"}, {"id": 284, "label": "name:CARLA GARCIA", "group": "entity", "title": "name:CARLA GARCIA"}, {"id": 328, "label": "name:ASOCIACION INTERNACIONAL DE SOCIOLO", "group": "entity", "title": "name:ASOCIACION INTERNACIONAL DE SOCIOLO"}, {"id": 320, "label": "name:MUZIKKON LTD", "group": "entity", "title": "name:MUZIKKON LTD"}, {"id": 280, "label": "name:GLOBE EUROPE SAS", "group": "entity", "title": "name:GLOBE EUROPE SAS"}, {"id": 288, "label": "name:ILENIA LUISA IORIO", "group": "entity", "title": "name:ILENIA LUISA IORIO"}, {"id": 308, "label": "name:SCHMUCKZEIT EUROPE GMBH", "group": "entity", "title": "name:SCHMUCKZEIT EUROPE GMBH"}, {"id": 282, "label": "name:FUMETTI IN GONDOLA", "group": "entity", "title": "name:FUMETTI IN GONDOLA"}, {"id": 316, "label": "name:VANESSA GASSER", "group": "entity", "title": "name:VANESSA GASSER"}, {"id": 286, "label": "name:WORLD FAMILY OF RADIO MARIA ONLUS", "group": "entity", "title": "name:WORLD FAMILY OF RADIO MARIA ONLUS"}, {"id": 278, "label": "name:LUCAS RAGOT", "group": "entity", "title": "name:LUCAS RAGOT"}, {"id": 304, "label": "name:VACON MARKETING S L U", "group": "entity", "title": "name:VACON MARKETING S L U"}, {"id": 274, "label": "name:SAS PETE SORENSEN", "group": "entity", "title": "name:SAS PETE SORENSEN"}
+      ]);
+      var edges = new vis.DataSet([{"from": 324, "to": 323, "label": "owns"}, {"from": 314, "to": 313, "label": "owns"}, {"from": 276, "to": 275, "label": "owns"}, {"from": 300, "to": 299, "label": "owns"}, {"from": 292, "to": 291, "label": "owns"}, {"from": 264, "to": 329, "label": "transfer"}, {"from": 264, "to": 327, "label": "transfer"}, {"from": 264, "to": 325, "label": "transfer"}, {"from": 264, "to": 323, "label": "transfer"}, {"from": 264, "to": 273, "label": "transfer"}, {"from": 264, "to": 275, "label": "transfer"}, {"from": 264, "to": 277, "label": "transfer"}, {"from": 264, "to": 279, "label": "transfer"}, {"from": 264, "to": 281, "label": "transfer"}, {"from": 264, "to": 283, "label": "transfer"}, {"from": 264, "to": 285, "label": "transfer"}, {"from": 264, "to": 287, "label": "transfer"}, {"from": 264, "to": 289, "label": "transfer"}, {"from": 264, "to": 291, "label": "transfer"}, {"from": 264, "to": 293, "label": "transfer"}, {"from": 264, "to": 295, "label": "transfer"}, {"from": 264, "to": 297, "label": "transfer"}, {"from": 264, "to": 299, "label": "transfer"}, {"from": 264, "to": 301, "label": "transfer"}, {"from": 264, "to": 303, "label": "transfer"}, {"from": 264, "to": 305, "label": "transfer"}, {"from": 264, "to": 307, "label": "transfer"}, {"from": 264, "to": 309, "label": "transfer"}, {"from": 264, "to": 311, "label": "transfer"}, {"from": 264, "to": 313, "label": "transfer"}, {"from": 264, "to": 315, "label": "transfer"}, {"from": 264, "to": 317, "label": "transfer"}, {"from": 264, "to": 319, "label": "transfer"}, {"from": 264, "to": 321, "label": "transfer"}, {"from": 264, "to": 329, "label": "total"}, {"from": 264, "to": 327, "label": "total"}, {"from": 264, "to": 325, "label": "total"}, {"from": 264, "to": 323, "label": "total"}, {"from": 264, "to": 273, "label": "total"}, {"from": 264, "to": 275, "label": "total"}, {"from": 264, "to": 277, "label": "total"}, {"from": 264, "to": 279, "label": "total"}, {"from": 264, "to": 281, "label": "total"}, {"from": 264, "to": 283, "label": "total"}, {"from": 264, "to": 285, "label": "total"}, {"from": 264, "to": 287, "label": "total"}, {"from": 264, "to": 289, "label": "total"}, {"from": 264, "to": 291, "label": "total"}, {"from": 264, "to": 293, "label": "total"}, {"from": 264, "to": 295, "label": "total"}, {"from": 264, "to": 297, "label": "total"}, {"from": 264, "to": 299, "label": "total"}, {"from": 264, "to": 301, "label": "total"}, {"from": 264, "to": 303, "label": "total"}, {"from": 264, "to": 305, "label": "total"}, {"from": 264, "to": 307, "label": "total"}, {"from": 264, "to": 309, "label": "total"}, {"from": 264, "to": 311, "label": "total"}, {"from": 264, "to": 313, "label": "total"}, {"from": 264, "to": 315, "label": "total"}, {"from": 264, "to": 317, "label": "total"}, {"from": 264, "to": 319, "label": "total"}, {"from": 264, "to": 321, "label": "total"}, {"from": 330, "to": 329, "label": "owns"}, {"from": 333, "to": 332, "label": "owns"}, {"from": 318, "to": 317, "label": "owns"}, {"from": 296, "to": 295, "label": "owns"}, {"from": 312, "to": 311, "label": "owns"}, {"from": 306, "to": 305, "label": "owns"}, {"from": 298, "to": 297, "label": "owns"}, {"from": 302, "to": 301, "label": "owns"}, {"from": 326, "to": 325, "label": "owns"}, {"from": 290, "to": 289, "label": "owns"}, {"from": 331, "to": 332, "label": "transfer"}, {"from": 331, "to": 332, "label": "total"}, {"from": 310, "to": 309, "label": "owns"}, {"from": 322, "to": 321, "label": "owns"}, {"from": 294, "to": 293, "label": "owns"}, {"from": 284, "to": 283, "label": "owns"}, {"from": 328, "to": 327, "label": "owns"}, {"from": 320, "to": 319, "label": "owns"}, {"from": 280, "to": 279, "label": "owns"}, {"from": 288, "to": 287, "label": "owns"}, {"from": 308, "to": 307, "label": "owns"}, {"from": 282, "to": 281, "label": "owns"}, {"from": 316, "to": 315, "label": "owns"}, {"from": 286, "to": 285, "label": "owns"}, {"from": 278, "to": 277, "label": "owns"}, {"from": 304, "to": 303, "label": "owns"}, {"from": 274, "to": 273, "label": "owns"}]);
+ 
+  var data = {
+    nodes: nodes,
+    edges: edges
+  };
+  
+  var options = {
+  "autoResize": true,
+  "height": "100%",
+  "width": "100%",
+  "interaction": {
+    "dragNodes":true,
+    "dragView": true,
+    "hideEdgesOnDrag": false,
+    "hideNodesOnDrag": false,
+    "hover": false,
+    "navigationButtons": true,
+    "selectable": true,
+    "selectConnectedEdges": true,
+    "tooltipDelay": 300,
+    "zoomView": true,
+    "keyboard": {
+      "enabled": false,
+      "speed": {
+        "x": 10,
+        "y": 10,
+        "zoom": 0.02
+      },
+      "bindToWindow": true
+    }
+  },
+  "nodes": {
+    "shape": "box",
+    "color": {
+      "border" : "#2B7CE9",
+      "background" : "#97C2FC",
+      "highlight": {
+        "border": "#2B7CE9",
+        "background": "#D2E5FF"
+      },
+      "hover": {
+        "border": "white",
+        "background": "white"
+      }
+    }
+  },
+  "physics": {
+    "barnesHut": {
+      "centralGravity": 0,
+      "springLength": 240
+    }
+  },
+ "groups": {
+    "neighbours": {
+      "color": "#E6E6E6"
+    },
+    "matches": {
+      "color": "#97C2FC"
+    }
+  },
+  
+  "locale": "en_EN"
+}
+;
+  
+  var container = document.getElementById("visualization1");
+  
+  var network = new vis.Network(container, data, options);
+
+  var hasNetworkStabilized = false;
+  network.on("stabilized", function(properties) {
+
+    if(!hasNetworkStabilized) {
+      hasNetworkStabilized = true;
+
+      network.storePositions();
+      setNodesMoveable(data.nodes.get(), false);
+      
+      network.fit();
+    }
+    
+  });
+  
+  network.on("dragStart", function(properties) {
+    if(properties.nodes.length) {
+      var node = data.nodes.get(properties.nodes[0]); 
+      setNodesMoveable([ node ], true);
+    }
+  });
+  
+  network.on("dragEnd", function(properties) {
+    if(properties.nodes.length) {
+      var node = data.nodes.get(properties.nodes[0]); 
+      setNodesMoveable([ node ], false);
+    }
+  });
+  
+  setNodesMoveable = function(nodes, isMoveable) {
+
+    // first store positions
+    network.storePositions();
+
+    var updates = [];
+    var keys = Object.keys(nodes);
+
+    for(var i = 0; i < keys.length; i++) {
+      
+      var id = nodes[keys[i]].id;
+      
+      var update = {
+        id: id,
+        fixed: {  // v4: formerly allowToMoveX, allowToMoveY
+          x: !isMoveable,
+          y: !isMoveable
+        }
+      };
+      
+      updates.push(update);
+      
+    }
+
+    data.nodes.update(updates);
+    
+    console.log(updates);
+
+  };
+  
+  
+
+  
+  
+</script>
+</body>
+</html>

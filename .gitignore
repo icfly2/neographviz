@@ -1,0 +1,6 @@
+.pypirc
+build/
+dist/
+*/__pycache__/*
+figure/
+neographviz.egg-info/
