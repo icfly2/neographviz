@@ -1,6 +1,7 @@
 .pypirc
 build/
 dist/
-*/__pycache__/*
-figure/
+**/__pycache__/*
+**/figure/
 neographviz.egg-info/
+.vscode/
