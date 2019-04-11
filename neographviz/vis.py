@@ -50,7 +50,7 @@ def get_edges(sg: py2neo.Subgraph) -> List:
 
 def no_graph():
     joke = pyjokes.get_joke()
-    return HTML(data=f"<p>Query resulted in emtpy graph, have a joke instead:</p><br><p>{joke}</p>")
+    return HTML(data=f"<h1>No data found for query</h1><p>Query resulted in emtpy graph, have a joke instead:</p><br><p>{joke}</p><img src='https://i.imgur.com/7T9364v.gif?noredirect' alt='Fancy blockchain gif'>")
 
 
 def vis_network(
@@ -67,7 +67,9 @@ def vis_network(
     template = pkg_resources.resource_filename('neographviz', 'templates/')
     env = Environment(loader=FileSystemLoader(template))
     # env = Environment(loader=FileSystemLoader('figure'))
-    template = env.get_template('template_full_screen_fixed.html')
+    # template = env.get_template('template_full_screen_fixed.html')
+    template = env.get_template('vis.html')
+
     html = template.render(nodes=nodes, edges=edges)
     
     unique_id = str(uuid.uuid4())
@@ -81,7 +83,6 @@ def vis_network(
         os.mkdir("figure")
         with open(filename, "w") as file:
             file.write(html)
-
 
     return IFrame(filename, width="100%", height=str(height))
 

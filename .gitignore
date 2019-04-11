@@ -5,3 +5,5 @@ dist/
 **/figure/
 neographviz.egg-info/
 .vscode/
+**/interaction.html
+app.py

@@ -1,0 +1,34 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+  <!-- from output.jsbin.com/pejohi -->
+  <script src="http://www.visjs.org/dist/vis.js"></script>
+  <link href="http://www.visjs.org/dist/vis.css" rel="stylesheet" type="text/css" />
+  <style type="text/css">
+    html,
+    body {
+      height: 100%;
+      margin: 0px;
+    }
+
+    .graph {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+</head>
+
+<body>
+
+  {% if app %}
+
+    {% block interaction %}{% endblock %}
+
+  {% endif %}
+  
+  {% block vis %}{% endblock %}
+
+</body>
+
+</html>
