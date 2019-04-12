@@ -3,6 +3,7 @@ import json
 import uuid
 import os
 
+
 def vis_network(
     nodes,
     edges,
@@ -66,7 +67,6 @@ def vis_network(
     </html>
     """
 
-
     unique_id = str(uuid.uuid4())
     if not jsoptions:
         jsoptions = """
@@ -119,25 +119,44 @@ def vis_network(
     )
     if not filename:
         filename = "figure/graph-{}.html".format(unique_id)
-    
+
     try:
         with open(filename, "w") as file:
             file.write(html)
     except FileNotFoundError:
         os.mkdir("figure")
         with open(filename, "w") as file:
-            file.write(html)   
+            file.write(html)
 
     return IFrame(filename, width="100%", height=str(height))
 
 
-
-
 def roundness(from_node, to_node, cache) -> float:
-    already = cache.get((from_node, to_node),None)
+    already = cache.get((from_node, to_node), None)
     if already:
-        precomputed = [0.6,-0.6,0.4,-0.4,0.6,-0.6,0.8,-0.8,1,-1,0.1,-0.1,0.3,-0.3,0.5,-0.5,0.7,-0.7,0.9,-0.9]
-        if len(already) < len(precomputed):            
+        precomputed = [
+            0.6,
+            -0.6,
+            0.4,
+            -0.4,
+            0.6,
+            -0.6,
+            0.8,
+            -0.8,
+            1,
+            -1,
+            0.1,
+            -0.1,
+            0.3,
+            -0.3,
+            0.5,
+            -0.5,
+            0.7,
+            -0.7,
+            0.9,
+            -0.9,
+        ]
+        if len(already) < len(precomputed):
             curve = precomputed[len(already)]
         else:
             curve = 0.15
@@ -163,7 +182,7 @@ def get_vis_info(node, id, options):
 
 def draw(
     graph,
-    query = "",
+    query="",
     options={},
     physics=False,
     limit=100,
@@ -194,7 +213,7 @@ def draw(
     Returns:
         [type] -- [description]
     """
-    
+
     # The options argument should be a dictionary of node labels and property keys; it determines which property
     # is displayed for the node label. For example, in the movie graph, options = {"Movie": "title", "Person": "name"}.
     # Omitting a node label from the options dict will leave the node unlabeled in the visualization.
@@ -218,7 +237,6 @@ def draw(
     nodes = []
     edges = []
 
-
     for row in data:
         source_node = row[0]
         source_id = row[1]
@@ -237,27 +255,29 @@ def draw(
             if target_info not in nodes:
                 nodes.append(target_info)
 
-            label = "".join([f"{name} " for name in rel.types()]).strip()            
+            label = "".join([f"{name} " for name in rel.types()]).strip()
             if len(rel.keys()):
                 # we have keys get the details
                 try:
-                    title = "".join([f"{key}:{str(rel[key])} " for key in list(rel.keys())]).strip()
+                    title = "".join(
+                        [f"{key}:{str(rel[key])} " for key in list(rel.keys())]
+                    ).strip()
                 except:
                     breakpoint()
             else:
-                #there is nothing more to it
+                # there is nothing more to it
                 title = "".join([f"{name} " for name in rel.types()]).strip()
             # try:
             #     title = "".join([f"{name}:{value} " for name, value in rel.items()]).strip()
             # except:
-            rdns, cache = roundness(source_info['id'], target_info['id'], cache)
+            rdns, cache = roundness(source_info["id"], target_info["id"], cache)
             edges.append(
                 {
                     "from": source_info["id"],
                     "to": target_info["id"],
                     "label": label,
                     "title": title,
-                    "smooth": f"{{type: 'curvedCW', roundness: {rdns} }}"
+                    "smooth": f"{{type: 'curvedCW', roundness: {rdns} }}",
                 }
             )
 

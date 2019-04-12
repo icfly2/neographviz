@@ -1,9 +1,9 @@
 {% extends "index.html" %}
 
-{% block vis %}
 
+{% block vis %}
+{% if nodes %}
 <div class="graph" id="visualization1"></div>
-<!-- <button onclick="javascript:action()">Click me</button> -->
 
 <script type="text/javascript">
 
@@ -142,4 +142,15 @@
   };
 
 </script>
+
+
+{% else %}
+<div style="text-align:center">
+<h1>No data selected</h1>
+<p>If you ran a query and expected data, the query resulted in an empty graph</p>
+<img src='https://i.imgur.com/7T9364v.gif' alt='Fancy blockchain gif'>
+<!-- <img src="https://www.bankingcircle.com/wp-content/uploads/2018/11/BRO_20181105_BC_Laust_Bertelsen_398-Edit-e1543489022858.jpg" alt='Fancy blockchain gif' height="600"> -->
+</div>
+{% endif %}
+
 {% endblock %}

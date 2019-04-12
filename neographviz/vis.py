@@ -10,47 +10,42 @@ import pyjokes
 import pkg_resources
 
 
-
-def plot_query(graph: py2neo.Graph, query:str, **kwargs):
+def plot_query(graph: py2neo.Graph, query: str, **kwargs):
     sg = graph.run(query).to_subgraph()
-    if sg:
-        return vis_network(get_nodes(sg),get_edges(sg), **kwargs)
-    else:
-        return no_graph()
+    return vis_network(get_nodes(sg), get_edges(sg), **kwargs)
+
 
 def get_nodes(sg: py2neo.Subgraph) -> List:
     nodes = []
-    for n in sg.nodes:
-        nodes.append(
-            {
-                "id": n.identity,
-                "group":n.labels.__str__()[1:],
-                "label": " ".join([f"{v}" for v in n.values()]),
-                "title": "<br> ".join([f"{k}:{v}" for k, v in n.items()]),
-            }
-        )
+    if sg:
+        for n in sg.nodes:
+            nodes.append(
+                {
+                    "id": n.identity,
+                    "group": n.labels.__str__()[1:],
+                    "label": " ".join([f"{v}" for v in n.values()]),
+                    "title": "<br> ".join([f"{k}:{v}" for k, v in n.items()]),
+                }
+            )
     return nodes
+
 
 def get_edges(sg: py2neo.Subgraph) -> List:
     edges = []
-    for r in sg.relationships:
-        d = {
-                "from":r.start_node.identity,
-                "to":r.end_node.identity,
+    if sg:
+        for r in sg.relationships:
+            d = {
+                "from": r.start_node.identity,
+                "to": r.end_node.identity,
                 "label": "".join(r.types()),
-                "arrows": 'to'
+                "arrows": "to",
             }
-        try:
-            d["title"] = " <br>".join([str(k)+':'+str(v) for k, v in r.items()])
-        except:
-            pass
-        edges.append(d)
+            try:
+                d["title"] = " <br>".join([str(k) + ":" + str(v) for k, v in r.items()])
+            except:
+                pass
+            edges.append(d)
     return edges
-
-
-def no_graph():
-    joke = pyjokes.get_joke()
-    return HTML(data=f"<h1>No data found for query</h1><p>Query resulted in emtpy graph, have a joke instead:</p><br><p>{joke}</p><img src='https://i.imgur.com/7T9364v.gif?noredirect' alt='Fancy blockchain gif'>")
 
 
 def vis_network(
@@ -64,18 +59,18 @@ def vis_network(
     config=False,
     jsoptions=None,
 ):
-    template = pkg_resources.resource_filename('neographviz', 'templates/')
+    template = pkg_resources.resource_filename("neographviz", "templates/")
     env = Environment(loader=FileSystemLoader(template))
     # env = Environment(loader=FileSystemLoader('figure'))
     # template = env.get_template('template_full_screen_fixed.html')
-    template = env.get_template('vis.html')
+    template = env.get_template("vis.html")
 
     html = template.render(nodes=nodes, edges=edges)
-    
+
     unique_id = str(uuid.uuid4())
     if not filename:
         filename = "figure/graph-{}.html".format(unique_id)
-    
+
     try:
         with open(filename, "w") as file:
             file.write(html)

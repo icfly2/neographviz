@@ -2,6 +2,7 @@ from IPython.display import IFrame
 import json
 import uuid
 
+
 def vis_network(nodes, edges, physics=False):
     html = """
     <html>
@@ -56,15 +57,21 @@ def vis_network(nodes, edges, physics=False):
     """
 
     unique_id = str(uuid.uuid4())
-    html = html.format(id=unique_id, nodes=json.dumps(nodes), edges=json.dumps(edges), physics=json.dumps(physics))
+    html = html.format(
+        id=unique_id,
+        nodes=json.dumps(nodes),
+        edges=json.dumps(edges),
+        physics=json.dumps(physics),
+    )
 
     filename = "figure/graph-{}.html".format(unique_id)
-    
+
     file = open(filename, "w")
     file.write(html)
     file.close()
 
     return IFrame(filename, width="100%", height="400")
+
 
 def draw(graph, options, physics=False, limit=100):
     # The options argument should be a dictionary of node labels and property keys; it determines which property
@@ -94,7 +101,12 @@ def draw(graph, options, physics=False, limit=100):
         prop_key = options.get(node_label)
         vis_label = node.properties.get(prop_key, "")
 
-        return {"id": id, "label": vis_label, "group": node_label, "title": repr(node.properties)}
+        return {
+            "id": id,
+            "label": vis_label,
+            "group": node_label,
+            "title": repr(node.properties),
+        }
 
     for row in data:
         source_node = row[0]
@@ -114,6 +126,12 @@ def draw(graph, options, physics=False, limit=100):
             if target_info not in nodes:
                 nodes.append(target_info)
 
-            edges.append({"from": source_info["id"], "to": target_info["id"], "label": rel.type()})
+            edges.append(
+                {
+                    "from": source_info["id"],
+                    "to": target_info["id"],
+                    "label": rel.type(),
+                }
+            )
 
     return vis_network(nodes, edges, physics=physics)
