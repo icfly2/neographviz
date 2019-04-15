@@ -3,153 +3,167 @@
 
 {% block vis %}
 {% if nodes %}
-<div class="graph" id="visualization1"></div>
 
-<script type="text/javascript">
+<div id="main">
+  <!-- from output.jsbin.com/pejohi -->
+  <script src="http://www.visjs.org/dist/vis.js"></script>
+  <link href="http://www.visjs.org/dist/vis.css" rel="stylesheet" type="text/css" />
+  <div class="graph" id="visualization1"></div>
 
-  var action = function () {
-    var container = document.getElementById("visualization");
-    container.parentNode.removeChild(container);
-  }
 
-  var nodes = new vis.DataSet({{ nodes |safe  }});
-  var edges = new vis.DataSet({{ edges |safe  }});
+  <script type="text/javascript">
 
-  var data = {
-    nodes: nodes,
-    edges: edges
-  };
+    var action = function () {
+      var container = document.getElementById("visualization");
+      container.parentNode.removeChild(container);
+    }
 
-  var options = {
-    "autoResize": true,
-    "height": "100%",
-    "width": "100%",
-    "interaction": {
-      "dragNodes": true,
-      "dragView": true,
-      "hideEdgesOnDrag": false,
-      "hideNodesOnDrag": false,
-      "hover": false,
-      "navigationButtons": true,
-      "selectable": true,
-      "selectConnectedEdges": true,
-      "tooltipDelay": 300,
-      "zoomView": true,
-      "keyboard": {
-        "enabled": false,
-        "speed": {
-          "x": 10,
-          "y": 10,
-          "zoom": 0.02
-        },
-        "bindToWindow": true
-      }
-    },
-    "nodes": {
-      "shape": "box",
-      "color": {
-        "border": "#2B7CE9",
-        "background": "#97C2FC",
-        "highlight": {
-          "border": "#2B7CE9",
-          "background": "#D2E5FF"
-        },
-        "hover": {
-          "border": "white",
-          "background": "white"
+    var nodes = new vis.DataSet({{ nodes | safe  }});
+    var edges = new vis.DataSet({{ edges | safe  }});
+
+    var data = {
+      nodes: nodes,
+      edges: edges
+    };
+
+    var options = {
+      "manipulation": false,
+      "autoResize": true,
+      "height": "100%",
+      "width": "100%",
+      "interaction": {
+        "dragNodes": true,
+        "dragView": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false,
+        "hover": true,
+        "navigationButtons": true,
+        "selectable": true,
+        "selectConnectedEdges": true,
+        "tooltipDelay": 300,
+        "zoomView": true,
+        "keyboard": {
+          "enabled": false,
+          "speed": {
+            "x": 10,
+            "y": 10,
+            "zoom": 0.02
+          },
+          "bindToWindow": true
         }
-      }
-    },
-    "physics": {
-      "barnesHut": {
-        "centralGravity": 0,
-        "springLength": 240
-      }
-    },
-    "groups": {
-      "neighbours": {
-        "color": "#E6E6E6"
       },
-      "matches": {
-        "color": "#97C2FC"
-      }
-    },
-
-    "locale": "en_EN"
-  }
-    ;
-
-  var container = document.getElementById("visualization1");
-
-  var network = new vis.Network(container, data, options);
-
-  var hasNetworkStabilized = false;
-  network.on("stabilized", function (properties) {
-
-    if (!hasNetworkStabilized) {
-      hasNetworkStabilized = true;
-
-      network.storePositions();
-      setNodesMoveable(data.nodes.get(), false);
-
-      network.fit();
-    }
-
-  });
-
-  network.on("dragStart", function (properties) {
-    if (properties.nodes.length) {
-      var node = data.nodes.get(properties.nodes[0]);
-      setNodesMoveable([node], true);
-    }
-  });
-
-  network.on("dragEnd", function (properties) {
-    if (properties.nodes.length) {
-      var node = data.nodes.get(properties.nodes[0]);
-      setNodesMoveable([node], false);
-    }
-  });
-
-  setNodesMoveable = function (nodes, isMoveable) {
-
-    // first store positions
-    network.storePositions();
-
-    var updates = [];
-    var keys = Object.keys(nodes);
-
-    for (var i = 0; i < keys.length; i++) {
-
-      var id = nodes[keys[i]].id;
-
-      var update = {
-        id: id,
-        fixed: {  // v4: formerly allowToMoveX, allowToMoveY
-          x: !isMoveable,
-          y: !isMoveable
+      "nodes": {
+        "shape": "box",
+        "color": {
+          "border": "#2B7CE9",
+          "background": "#97C2FC",
+          "highlight": {
+            "border": "#2B7CE9",
+            "background": "#D2E5FF"
+          },
+          "hover": {
+            "border": "white",
+            "background": "white"
+          }
         }
-      };
+      },
+      "physics": {
+        "barnesHut": {
+          "centralGravity": 0,
+          "springLength": 240
+        }
+      },
+      "groups": {
+        "neighbours": {
+          "color": "#E6E6E6"
+        },
+        "matches": {
+          "color": "#97C2FC"
+        },
+        "acc": {
+          "color": "#008C6E"
+        },
+        "entity": {
+          "color": "#497C92" // "#BEAFB4",
+        },
+        "selected": {
+          "color": "#C16060" // "#872D32"
+        }
+      },
 
-      updates.push(update);
+      "locale": "en_EN"
+    };
 
-    }
+    var container = document.getElementById("visualization1");
 
-    data.nodes.update(updates);
-
-    console.log(updates);
-
-  };
-
-</script>
+    var network = new vis.Network(container, data, options);
 
 
+    var hasNetworkStabilized = false;
+    network.on("stabilized", function (properties) {
+
+      if (!hasNetworkStabilized) {
+        hasNetworkStabilized = true;
+
+        network.storePositions();
+        setNodesMoveable(data.nodes.get(), false);
+
+        network.fit();
+      }
+    });
+
+    network.on("dragStart", function (properties) {
+      if (properties.nodes.length) {
+        var node = data.nodes.get(properties.nodes[0]);
+        setNodesMoveable([node], true);
+      }
+    });
+
+    network.on("dragEnd", function (properties) {
+      if (properties.nodes.length) {
+        var node = data.nodes.get(properties.nodes[0]);
+        setNodesMoveable([node], false);
+      }
+    });
+
+    setNodesMoveable = function (nodes, isMoveable) {
+
+      // first store positions
+      network.storePositions();
+
+      var updates = [];
+      var keys = Object.keys(nodes);
+
+      for (var i = 0; i < keys.length; i++) {
+
+        var id = nodes[keys[i]].id;
+
+        var update = {
+          id: id,
+          fixed: {  // v4: formerly allowToMoveX, allowToMoveY
+            x: !isMoveable,
+            y: !isMoveable
+          }
+        };
+
+        updates.push(update);
+
+      }
+
+      data.nodes.update(updates);
+
+      console.log(updates);
+
+    };
+  </script>
+
+</div>
 {% else %}
 <div style="text-align:center">
-<h1>No data selected</h1>
-<p>If you ran a query and expected data, the query resulted in an empty graph</p>
-<img src='https://i.imgur.com/7T9364v.gif' alt='Fancy blockchain gif'>
-<!-- <img src="https://www.bankingcircle.com/wp-content/uploads/2018/11/BRO_20181105_BC_Laust_Bertelsen_398-Edit-e1543489022858.jpg" alt='Fancy blockchain gif' height="600"> -->
+  <h1>No data selected</h1>
+  <p>If you ran a query and expected data, the query resulted in an empty graph</p>
+  <img src='https://i.imgur.com/7T9364v.gif' alt='Fancy blockchain gif'>
+  <!-- <img src="https://www.bankingcircle.com/wp-content/uploads/2018/11/BRO_20181105_BC_Laust_Bertelsen_398-Edit-e1543489022858.jpg" alt='Fancy blockchain gif' height="600"> -->
 </div>
 {% endif %}
 

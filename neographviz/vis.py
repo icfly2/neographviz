@@ -6,7 +6,6 @@ from jinja2 import FileSystemLoader, Environment
 from tempfile import NamedTemporaryFile
 import py2neo
 from typing import List
-import pyjokes
 import pkg_resources
 
 
@@ -37,7 +36,7 @@ def get_edges(sg: py2neo.Subgraph) -> List:
             d = {
                 "from": r.start_node.identity,
                 "to": r.end_node.identity,
-                "label": "".join(r.types()),
+                "label": next(iter(r.types())),
                 "arrows": "to",
             }
             try:
