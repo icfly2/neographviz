@@ -1,0 +1,15 @@
+version: '2.4'
+
+services:
+  graphviz:
+    image: neographviz:latest
+    environment:
+      #- VIRTUAL_HOST= results.thebeast.sxp.saxopayments.com
+      #- PYTHONFILESHARE=/data/git/
+      - env=$env
+    ports:
+      - 5002:5000
+    user: ${CURRENT_UID}
+
+  graph:
+    image: neo4j:latest
