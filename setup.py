@@ -12,7 +12,7 @@ setup(
     long_description_content_type="text/markdown",
     author= 'Ruben Menke',
     author_email='ruben.m.menke@gmail.com',
-    url='https://github.com/icfly2/neo4j-jupyter',
+    url='https://github.com/icfly2/neographviz',
     packages=['neographviz'],
     # package_data= ['lib'],
     package_data={'neographviz': ['templates/*.html']},
