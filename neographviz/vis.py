@@ -1,20 +1,32 @@
-from IPython.display import IFrame, HTML, Image, display_html
 import json
-import uuid
 import os
-from jinja2 import FileSystemLoader, Environment
+import uuid
 from tempfile import NamedTemporaryFile
-import py2neo
 from typing import List
+
 import pkg_resources
+import py2neo
+from IPython.display import HTML, IFrame, Image, display_html
+from jinja2 import Environment, FileSystemLoader
 
 
 def plot_query(graph: py2neo.Graph, query: str, **kwargs):
     sg = graph.run(query).to_subgraph()
-    return vis_network(get_nodes(sg), get_edges(sg), **kwargs)
+    return vis_network(_get_nodes(sg), _get_edges(sg), **kwargs)
 
 
-def get_nodes(sg: py2neo.Subgraph) -> List:
+def _get_nodes(sg: py2neo.Subgraph) -> List[dict]:
+    """Get nodes from a subgraph
+    
+    Get the nodes in a subgraph and add the data so that
+    visjs can consume it. 
+
+    Arguments:
+        sg {py2neo.Subgraph} -- 
+    
+    Returns:
+        List -- List of dictionaries with keys: id, group, label, title
+    """    
     nodes = []
     if sg:
         for n in sg.nodes:
@@ -29,7 +41,7 @@ def get_nodes(sg: py2neo.Subgraph) -> List:
     return nodes
 
 
-def get_edges(sg: py2neo.Subgraph) -> List:
+def _get_edges(sg: py2neo.Subgraph) -> List:
     edges = []
     if sg:
         for r in sg.relationships:
@@ -58,6 +70,7 @@ def vis_network(
     config=False,
     jsoptions=None,
 ):
+        
     template = pkg_resources.resource_filename("neographviz", "templates/")
     env = Environment(loader=FileSystemLoader(template))
     # env = Environment(loader=FileSystemLoader('figure'))
@@ -131,7 +144,7 @@ def get_vis_info(node, id, options):
 
 
 def draw(
-    graph,
+    graph: py2neo.Graph,
     query="",
     options={},
     physics=False,
@@ -143,8 +156,17 @@ def draw(
     jsoptions=None,
     config=False,
 ):
-    """[summary]
-    
+    """Draw a graph.
+
+
+
+    Example:
+
+        from py2neo import Graph
+        from neographviz import draw
+        g = Graph(user='neo4j', password='password')
+        draw(g)
+
     Arguments:
         graph {[type]} -- [description]
     
