@@ -1,9 +1,8 @@
 import py2neo
 
-version = py2neo.__version__[0]
-if int(version) == 4:
-    from .vis import *  # as graphviz
-elif int(version) == 3:
-    from .vis_old import *  # vis_old as graphviz
-elif int(version) < 3:
-    raise NotImplementedError(f"Not defined for py2neo version {version} ")
+__version__ = 0.3
+
+if py2neo.__version__[0] >= 4:
+    from .vis import plot_query, get_edges, get_nodes, draw  # as graphviz
+else:
+    raise NotImplementedError("Requires py2neo v4 or (possibly) newer")

@@ -186,7 +186,6 @@ def draw(
     cache = {}
     nodes = []
     edges = []
-
     for row in data:
         source_node = row[0]
         source_id = row[1]
@@ -198,7 +197,6 @@ def draw(
         if source_info not in nodes:
             nodes.append(source_info)
 
-        #  smooth: {type: 'curvedCW', roundness: 0.2}
         if rel is not None:
             target_info = get_vis_info(target_node, target_id, options)
 
@@ -208,18 +206,13 @@ def draw(
             label = "".join([f"{name} " for name in rel.types()]).strip()
             if len(rel.keys()):
                 # we have keys get the details
-                try:
-                    title = "".join(
-                        [f"{key}:{str(rel[key])} " for key in list(rel.keys())]
-                    ).strip()
-                except:
-                    breakpoint()
+                title = "".join(
+                    [f"{key}:{str(rel[key])} " for key in list(rel.keys())]
+                ).strip()
             else:
                 # there is nothing more to it
                 title = "".join([f"{name} " for name in rel.types()]).strip()
-            # try:
-            #     title = "".join([f"{name}:{value} " for name, value in rel.items()]).strip()
-            # except:
+            
             rdns, cache = roundness(source_info["id"], target_info["id"], cache)
             edges.append(
                 {
