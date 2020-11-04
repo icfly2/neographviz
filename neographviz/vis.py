@@ -10,7 +10,23 @@ from IPython.display import HTML, IFrame, Image, display_html
 from jinja2 import Environment, FileSystemLoader
 
 
-def plot_query(graph: py2neo.Graph, query: str, **kwargs):
+def plot(graph: py2neo.Graph, query: str="match p=()--()--() return p limit 25", **kwargs) -> IFrame:
+    """Plot a graph, using a query.
+
+    Heavy lifting is done via py2neo `to_subgraph` and `neographviz.vis_network`
+
+    Example:
+        >>> from neographviz import plot, Graph
+        >>> graph = Graph() # You need a graph at localhos, or pass the uri here.
+        >>> plot(graph)
+
+    Args:
+        graph (py2neo.Graph): Graph object from py2neo
+        query (str, optional): Any valid cypher query, must return a path p, should use a limit. Defaults to "match p=()--()--() return p limit 25".
+
+    Returns:
+        IFrame: IFrame to show in jupyter notebook or website.
+    """    
     sg = graph.run(query).to_subgraph()
     return vis_network(_get_nodes(sg), _get_edges(sg), **kwargs)
 
@@ -62,22 +78,46 @@ def _get_edges(sg: py2neo.Subgraph) -> List:
 def vis_network(
     nodes,
     edges,
-    physics=False,
+    physics='',
     height=400,
     node_size=25,
     font_size=14,
-    filename=None,
-    config=False,
-    jsoptions=None,
+    filename='',
+    config={},
+    template_file='vis.html'
 ):
-        
+    """Render a network with vis.js in an IFrame for use in a jupyter notebook or website. 
+
+    This function will render a template whihc uses vis.js to display the graph. 
+    The options configured can be passed directly to the template, but as it is vis.js underneith,
+    any valid options for it can be passed as js in string form to jsoptions.
+
+    Args:
+        nodes (List): List of nodes
+        edges (List): List of edges
+        physics (str, optional): Defintion of physics in vis.js. Defaults to basic barnesHut.
+        height (int, optional): Height of the plot in pixels. Defaults to 400.
+        node_size (int, optional): Defaults to 25.
+        font_size (int, optional): [description]. Defaults to 14.
+        filename (str, optional): Optional filenmae for storing the page. Defaults to a `''` and uses a uuid.
+        config (dict, optional): Custom kwargs to pass to template. Defaults to `{}`.
+        template_file (str, optional): Defaults to `vis.html` the provided template, provide your own.
+
+    Returns:
+        IFrame: Iframe to show in jupyter notebook
+    """
     template = pkg_resources.resource_filename("neographviz", "templates/")
     env = Environment(loader=FileSystemLoader(template))
-    # env = Environment(loader=FileSystemLoader('figure'))
-    # template = env.get_template('template_full_screen_fixed.html')
-    template = env.get_template("vis.html")
+    template = env.get_template(template_file)
+    if not physics:
+        physics = """{
+            "barnesHut": {
+            "centralGravity": 0,
+            "springLength": 240
+            }
+        }"""
 
-    html = template.render(nodes=nodes, edges=edges)
+    html = template.render(nodes=nodes, edges=edges, physics=physics, node_size=node_size, font_size=font_size)
 
     unique_id = str(uuid.uuid4())
     if not filename:
@@ -93,45 +133,6 @@ def vis_network(
 
     return IFrame(filename, width="100%", height=str(height))
 
-
-def roundness(from_node, to_node, cache) -> float:
-    already = cache.get((from_node, to_node), None)
-    if already:
-        precomputed = [
-            0.6,
-            -0.6,
-            0.4,
-            -0.4,
-            0.6,
-            -0.6,
-            0.8,
-            -0.8,
-            1,
-            -1,
-            0.1,
-            -0.1,
-            0.3,
-            -0.3,
-            0.5,
-            -0.5,
-            0.7,
-            -0.7,
-            0.9,
-            -0.9,
-        ]
-        if len(already) < len(precomputed):
-            curve = precomputed[len(already)]
-        else:
-            curve = 0.15
-    else:
-        curve = 0
-        cache[(from_node, to_node)] = []
-
-    cache[(from_node, to_node)].append(curve)
-
-    return curve, cache
-
-
 def get_vis_info(node, id, options):
     node_label = list(node.labels)[0]
     title = "".join([f"{k}:{v} " for k, v in node.items()]).strip()
@@ -141,119 +142,3 @@ def get_vis_info(node, id, options):
         vis_label = title
 
     return {"id": id, "label": vis_label, "group": node_label, "title": title}
-
-
-def draw(
-    graph: py2neo.Graph,
-    query="",
-    options={},
-    physics=False,
-    limit=100,
-    height=400,
-    node_size=25,
-    font_size=14,
-    filename=None,
-    jsoptions=None,
-    config=False,
-):
-    """Draw a graph.
-
-
-
-    Example:
-
-        from py2neo import Graph
-        from neographviz import draw
-        g = Graph(user='neo4j', password='password')
-        draw(g)
-
-    Arguments:
-        graph {[type]} -- [description]
-    
-    Keyword Arguments:
-        query {str[CYPHER]} -- query to run on graph to plot, default is just as many random items as defined by limit.
-        options {dict} -- Display configuration options (default: {{}})
-        physics {bool} -- Weather to have animated physics (default: {False})
-        limit {int} -- Number of items to display (default: {100})
-        height {int} -- [description] (default: {400})
-        node_size {int} -- [description] (default: {25})
-        font_size {int} -- [description] (default: {14})
-        filename {[type]} -- [description] (default: {None})
-        jsoptions {[type]} -- [description] (default: {None})
-        config {bool} -- [description] (default: {False})
-    
-    Returns:
-        [type] -- [description]
-    """
-
-    # The options argument should be a dictionary of node labels and property keys; it determines which property
-    # is displayed for the node label. For example, in the movie graph, options = {"Movie": "title", "Person": "name"}.
-    # Omitting a node label from the options dict will leave the node unlabeled in the visualization.
-    # Setting physics = True makes the nodes bounce around when you touch them!
-    if not query:
-        query = f"""
-        MATCH (n)
-        WITH n, rand() AS random
-        ORDER BY random
-        LIMIT {limit}
-        OPTIONAL MATCH (n)-[r]->(m)
-        RETURN n AS source_node,
-                id(n) AS source_id,
-                r,
-                m AS target_node,
-                id(m) AS target_id
-        """
-
-    data = graph.run(query)
-    cache = {}
-    nodes = []
-    edges = []
-    for row in data:
-        source_node = row[0]
-        source_id = row[1]
-        rel = row[2]
-        target_node = row[3]
-        target_id = row[4]
-        source_info = get_vis_info(source_node, source_id, options)
-
-        if source_info not in nodes:
-            nodes.append(source_info)
-
-        if rel is not None:
-            target_info = get_vis_info(target_node, target_id, options)
-
-            if target_info not in nodes:
-                nodes.append(target_info)
-
-            label = "".join([f"{name} " for name in rel.types()]).strip()
-            if len(rel.keys()):
-                # we have keys get the details
-                title = "".join(
-                    [f"{key}:{str(rel[key])} " for key in list(rel.keys())]
-                ).strip()
-            else:
-                # there is nothing more to it
-                title = "".join([f"{name} " for name in rel.types()]).strip()
-            
-            rdns, cache = roundness(source_info["id"], target_info["id"], cache)
-            edges.append(
-                {
-                    "from": source_info["id"],
-                    "to": target_info["id"],
-                    "label": label,
-                    "title": title,
-                    "smooth": f"{{type: 'curvedCW', roundness: {rdns} }}",
-                }
-            )
-
-    return vis_network(
-        nodes,
-        edges,
-        physics=physics,
-        height=height,
-        node_size=node_size,
-        font_size=font_size,
-        filename=filename,
-        jsoptions=jsoptions,
-        config=config,
-    )

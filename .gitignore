@@ -10,3 +10,5 @@ app.py
 *.zip
 env/
 utils.py
+**/.ipynb_checkpoints/
+notebooks/secrets.py

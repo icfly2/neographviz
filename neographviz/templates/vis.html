@@ -53,7 +53,16 @@
           "bindToWindow": true
         }
       },
+      "edges": {
+        "font":{
+          "size": {{font_size}}
+        },
+      },
       "nodes": {
+        "font":{
+          "size": {{font_size}}
+        },
+        "size": {{node_size}},
         "shape": "box",
         "color": {
           "border": "#2B7CE9",
@@ -68,12 +77,7 @@
           }
         }
       },
-      "physics": {
-        "barnesHut": {
-          "centralGravity": 0,
-          "springLength": 240
-        }
-      },
+      "physics": {{ physics }},
       "groups": {
         "neighbours": {
           "color": "#E6E6E6"
