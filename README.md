@@ -9,11 +9,25 @@ Derived and forked from [Nicole White's work](https://github.com/nicolewhite/neo
 - allow you to run cypher queries from your jupyter notebook
 - enable deployment of apps with custom graph queries to make the DB accessible to more people.
 - save the graph as html page that can be shared and interacted with.
+- show your graph as a website as easy as `python -m neographviz.app` or `python -m neographviz.app "bolt://path to graph" `
+
+## Get started
+### in Jupyter
+`pip install neographviz`, launch an jupyter notebook with:
+
+    from neographviz import Graph, plot
+    graph = Graph("bolt://path to you graph")
+    plot(graph)
+
+### With flask
+`pip install neographviz[app]`
+`python -m neographviz.app "bolt://path to graph"`
 
 ## Further development
 - customisation with jsons
-- modifying data in the DB with add and remove queries
-- basic automated queries
+- basic automated queries from website
+  - modifying data in the DB with add and remove queries
 - better examples and docs:
  - deployment as app to docker
  - in jupyter notebooks
+ 

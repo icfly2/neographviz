@@ -10,7 +10,9 @@ from IPython.display import HTML, IFrame, Image, display_html
 from jinja2 import Environment, FileSystemLoader
 
 
-def plot(graph: py2neo.Graph, query: str="match p=()--()--() return p limit 25", **kwargs) -> IFrame:
+def plot(
+    graph: py2neo.Graph, query: str = "match p=()--()--() return p limit 25", **kwargs
+) -> IFrame:
     """Plot a graph, using a query.
 
     Heavy lifting is done via py2neo `to_subgraph` and `neographviz.vis_network`
@@ -26,7 +28,7 @@ def plot(graph: py2neo.Graph, query: str="match p=()--()--() return p limit 25",
 
     Returns:
         IFrame: IFrame to show in jupyter notebook or website.
-    """    
+    """
     sg = graph.run(query).to_subgraph()
     return vis_network(_get_nodes(sg), _get_edges(sg), **kwargs)
 
@@ -42,7 +44,7 @@ def _get_nodes(sg: py2neo.Subgraph) -> List[dict]:
     
     Returns:
         List -- List of dictionaries with keys: id, group, label, title
-    """    
+    """
     nodes = []
     if sg:
         for n in sg.nodes:
@@ -78,13 +80,14 @@ def _get_edges(sg: py2neo.Subgraph) -> List:
 def vis_network(
     nodes,
     edges,
-    physics='',
+    physics="",
     height=400,
     node_size=25,
     font_size=14,
-    filename='',
+    filename="",
     config={},
-    template_file='vis.html'
+    template_file="vis.html",
+    app=False,
 ):
     """Render a network with vis.js in an IFrame for use in a jupyter notebook or website. 
 
@@ -117,21 +120,35 @@ def vis_network(
             }
         }"""
 
-    html = template.render(nodes=nodes, edges=edges, physics=physics, node_size=node_size, font_size=font_size)
+    if not app:
+        html = template.render(
+            nodes=nodes,
+            edges=edges,
+            physics=physics,
+            node_size=node_size,
+            font_size=font_size,
+        )
+        unique_id = str(uuid.uuid4())
+        if not filename:
+            filename = "figure/graph-{}.html".format(unique_id)
+        try:
+            with open(filename, "w") as file:
+                file.write(html)
+        except FileNotFoundError:
+            os.mkdir("figure")
+            with open(filename, "w") as file:
+                file.write(html)
 
-    unique_id = str(uuid.uuid4())
-    if not filename:
-        filename = "figure/graph-{}.html".format(unique_id)
+        return IFrame(filename, width="100%", height=str(height))
+    else:
+        return template.render(
+            nodes=nodes,
+            edges=edges,
+            physics=physics,
+            node_size=node_size,
+            font_size=font_size,
+        )
 
-    try:
-        with open(filename, "w") as file:
-            file.write(html)
-    except FileNotFoundError:
-        os.mkdir("figure")
-        with open(filename, "w") as file:
-            file.write(html)
-
-    return IFrame(filename, width="100%", height=str(height))
 
 def get_vis_info(node, id, options):
     node_label = list(node.labels)[0]
