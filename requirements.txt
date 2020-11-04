@@ -1,6 +1,6 @@
 flask>=1.1.1
 numpy>=1.17.2
 jinja2>=2.10.3
-waitress==1.4.2
+waitress==1.4.3
 pandas>=0.25.1
 py2neo>=2020.0.0
