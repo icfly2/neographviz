@@ -1,6 +1,7 @@
 import sys
+import argparse
 
-from flask import Flask
+from flask import Flask, request
 
 from neographviz import Graph, plot
 
@@ -10,20 +11,22 @@ app = Flask(__name__)
 @app.route("/")
 def index():
     "Main graph page"
-    out = plot(graph, template_file="vis.html", app=True)
+    query = request.args.get('query', 'match p= ()--() return p limit 25')
+    out = plot(graph, query=query, template_file="vis.html", app=True)
     return out
 
 
 if __name__ == "__main__":
-    options = sys.argv
-    if len(options)==1:
-        graph_host, debug = '', True
-    elif len(options)==2:
-        graph_host, debug = options[1], True
-    elif len(options)==3:
-        _, graph_host, debug = options
-    graph = Graph(graph_host)
-    if bool(debug):
+    parser = argparse.ArgumentParser(description='Launch a graph visalisation app.')
+    parser.add_argument('--debug', type=bool, default='True',
+                    help='Flag for debugging')
+    parser.add_argument('--host', default='', type=str,
+                    help='Path to the graph DB, defaults to localhost')
+    parser.add_argument('--port', default=5000, type=int,
+                help='POrt on which to serve the app')
+    options = parser.parse_args()
+    graph = Graph(options.host)
+    if options.debug:
         app.run(debug=True, port=5000)
     else:
         import waitress

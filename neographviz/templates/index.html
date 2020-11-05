@@ -47,13 +47,14 @@
 </head>
 
 <body>
-
   {% if app %}
-
-    {% block interaction %}{% endblock %}
-
+  <form target="/" method="GET">
+    <input type="text" name="query" sie="100">
+    <input type="submit" name="submit">
+  </form>
   {% endif %}
-  
+
+
   {% block vis %}{% endblock %}
 </body>
 

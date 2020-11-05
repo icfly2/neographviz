@@ -147,6 +147,7 @@ def vis_network(
             physics=physics,
             node_size=node_size,
             font_size=font_size,
+            app=app
         )
 
 
