@@ -6,7 +6,6 @@ dist/
 neographviz.egg-info/
 .vscode/
 **/interaction.html
-app.py
 *.zip
 env/
 utils.py
