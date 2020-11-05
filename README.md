@@ -20,8 +20,10 @@ Derived and forked from [Nicole White's work](https://github.com/nicolewhite/neo
     plot(graph)
 
 ### With flask
-`pip install neographviz[app]`
-`python -m neographviz.app "bolt://path to graph"`
+To run a basic flask app:
+
+    pip install neographviz[app]
+    python -m neographviz.app --host bolt://path to graph
 
 ## Further development
 - customisation with jsons
