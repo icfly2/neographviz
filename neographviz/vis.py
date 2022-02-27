@@ -46,8 +46,12 @@ def _get_nodes(sg: py2neo.Subgraph) -> List[dict]:
         List -- List of dictionaries with keys: id, group, label, title
     """
     nodes = []
+    node_id_set = set()
     if sg:
         for n in sg.nodes:
+            if n.identity in node_id_set:
+                continue
+            node_id_set.add(n.identity)
             nodes.append(
                 {
                     "id": n.identity,
