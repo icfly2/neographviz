@@ -2,14 +2,12 @@ import json
 import os
 import uuid
 from tempfile import NamedTemporaryFile
-from typing import List
+from typing import List, Dict
 
 import pkg_resources
 import py2neo
 from IPython.display import HTML, IFrame, Image, display_html
 from jinja2 import Environment, FileSystemLoader
-
-
 
 
 def Plot():
@@ -20,53 +18,76 @@ def Plot():
         sg = self.graph.run(query).to_subgraph()
         return self.vis_network(self._get_nodes(sg), self._get_edges(sg), **kwargs)
 
+    def define_nodes(self, node: py2neo.Node) -> Dict[str,str]:
+        """Define the node description
 
-    def _get_nodes(sg: py2neo.Subgraph) -> List[dict]:
+        Define how the node data is processed and extracted for display.
+
+        Output dict can contain the keys, id, group, label and title. Check viz JS for details.
+        Overwrite this function to suit your own needs.
+
+        Example:
+            {
+                "id": node.identity,
+                "group": node.labels.__str__()[1:],
+                "label": " ".join([f"{v}" for v in node.values()]),
+                "title": "<br> ".join([f"{k}:{v}" for k, v in node.items()]),
+            }
+
+        Args:
+            node (py2neo.Node): Input node data from subgraph.
+
+        Returns:
+            Dict[str,str]: Output dict for display with keys: id, group, label, title
+        """
+        return {
+                "id": node.identity,
+                "group": node.labels.__str__()[1:],
+                "label": " ".join([f"{v}" for v in node.values()]),
+                "title": "<br> ".join([f"{k}:{v}" for k, v in node.items()]),
+            }
+ 
+
+    def _get_nodes(self, sg: py2neo.Subgraph) -> List[Dict[str,str]]:
         """Get nodes from a subgraph
-        
+
         Get the nodes in a subgraph and add the data so that
-        visjs can consume it. 
+        visjs can consume it.
 
         Arguments:
-            sg {py2neo.Subgraph} -- 
-        
+            sg {py2neo.Subgraph} --
+
         Returns:
             List -- List of dictionaries with keys: id, group, label, title
         """
         nodes = []
         if sg:
-            for n in sg.nodes:
-                nodes.append(
-                    {
-                        "id": n.identity,
-                        "group": n.labels.__str__()[1:],
-                        "label": " ".join([f"{v}" for v in n.values()]),
-                        "title": "<br> ".join([f"{k}:{v}" for k, v in n.items()]),
-                    }
-                )
+            nodes = [self.define_nodes(node) for node in sg.nodes]
         return nodes
 
+    def define_edge(self, edge: py2neo.Relationship) -> Dict[str,str]:
+        d = {
+            "from": edge.start_node.identity,
+            "to": edge.end_node.identity,
+            "label": next(iter(edge.types())),
+            "arrows": "to",
+        }
+        try:
+            d["title"] = " <br>".join(
+                [str(k) + ":" + str(v) for k, v in edge.items()]
+            )
+        except:
+            pass
+        return d
 
-    def _get_edges(self, sg: py2neo.Subgraph) -> List:
+    def _get_edges(self, sg: py2neo.Subgraph) -> List[Dict[str,str]]:
         edges = []
         if sg:
-            for r in sg.relationships:
-                d = {
-                    "from": r.start_node.identity,
-                    "to": r.end_node.identity,
-                    "label": next(iter(r.types())),
-                    "arrows": "to",
-                }
-                try:
-                    d["title"] = " <br>".join([str(k) + ":" + str(v) for k, v in r.items()])
-                except:
-                    pass
-                edges.append(d)
+            edges = [self.define_edge(edge) for edge in sg.relationships]
         return edges
 
-
     def vis_network(
-        self, 
+        self,
         nodes,
         edges,
         physics="",
@@ -78,9 +99,9 @@ def Plot():
         template_file="vis.html",
         app=False,
     ):
-        """Render a network with vis.js in an IFrame for use in a jupyter notebook or website. 
+        """Render a network with vis.js in an IFrame for use in a jupyter notebook or website.
 
-        This function will render a template whihc uses vis.js to display the graph. 
+        This function will render a template whihc uses vis.js to display the graph.
         The options configured can be passed directly to the template, but as it is vis.js underneith,
         any valid options for it can be passed as js in string form to jsoptions.
 
@@ -136,9 +157,8 @@ def Plot():
                 physics=physics,
                 node_size=node_size,
                 font_size=font_size,
-                app=app
+                app=app,
             )
-
 
     def get_vis_info(self, node, id, options):
         node_label = list(node.labels)[0]
@@ -149,7 +169,6 @@ def Plot():
             vis_label = title
 
         return {"id": id, "label": vis_label, "group": node_label, "title": title}
-
 
 
 def plot(
