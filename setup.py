@@ -16,10 +16,5 @@ setup(
     url="https://github.com/icfly2/neographviz",
     packages=["neographviz"],
     package_data={"neographviz": ["templates/*.html"]},
-    install_requires=[
-        "py2neo>=2020.0.0",
-        "IPython",
-        "jinja2",
-    ],
     extras_require={"app": ["waitress==2.1.1", "flask>=1.1.1"]},
 )
