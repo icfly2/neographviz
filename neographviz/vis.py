@@ -63,6 +63,7 @@ def Plot():
         nodes = []
         if sg:
             nodes = [self.define_nodes(node) for node in sg.nodes]
+            nodes = list(set(nodes))
         return nodes
 
     def define_edge(self, edge: py2neo.Relationship) -> Dict[str,str]:
@@ -84,6 +85,7 @@ def Plot():
         edges = []
         if sg:
             edges = [self.define_edge(edge) for edge in sg.relationships]
+            edges = list(set(edges))
         return edges
 
     def vis_network(
@@ -160,15 +162,15 @@ def Plot():
                 app=app,
             )
 
-    def get_vis_info(self, node, id, options):
-        node_label = list(node.labels)[0]
-        title = "".join([f"{k}:{v} " for k, v in node.items()]).strip()
-        if node_label in options:
-            vis_label = node.get(options.get(node_label, ""), "")
-        else:
-            vis_label = title
+    # def get_vis_info(self, node, id, options):
+    #     node_label = list(node.labels)[0]
+    #     title = "".join([f"{k}:{v} " for k, v in node.items()]).strip()
+    #     if node_label in options:
+    #         vis_label = node.get(options.get(node_label, ""), "")
+    #     else:
+    #         vis_label = title
 
-        return {"id": id, "label": vis_label, "group": node_label, "title": title}
+    #     return {"id": id, "label": vis_label, "group": node_label, "title": title}
 
 
 def plot(
