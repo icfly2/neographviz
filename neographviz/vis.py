@@ -10,11 +10,29 @@ from IPython.display import HTML, IFrame, Image, display_html
 from jinja2 import Environment, FileSystemLoader
 
 
-def Plot():
+class Plot:
     def __init__(self, graph: py2neo.Graph):
         self.graph = graph
 
     def plot(self, query, **kwargs):
+        """Plot a graph, using a query.
+
+        Heavy lifting is done via py2neo `to_subgraph` and `neographviz.vis_network`
+
+        Example:
+            >>> from neographviz import plot
+            >>> from py2neo import Graph
+            >>> graph = Graph() # You need a graph at localhost, or pass the uri here.
+            >>> p = Plot(graph)
+            >>> p.plot("match p= (a)--() where id(a)=0  return p limit 5")
+
+        Args:
+            graph (py2neo.Graph): Graph object from py2neo
+            query (str): Any valid cypher query, must return a path p, should use a limit. Defaults to ""match p= (a)--() where id(a)=0  return p limit 5"".
+
+        Returns:
+            IFrame: IFrame to show in jupyter notebook or website.
+        """
         sg = self.graph.run(query).to_subgraph()
         return self.vis_network(self._get_nodes(sg), self._get_edges(sg), **kwargs)
 
@@ -61,9 +79,13 @@ def Plot():
             List -- List of dictionaries with keys: id, group, label, title
         """
         nodes = []
+        node_id_set = set()
         if sg:
-            nodes = [self.define_nodes(node) for node in sg.nodes]
-            nodes = list(set(nodes))
+            for node in sg.nodes:
+                if node.identity not in node_id_set:                
+                    node_id_set.add(node.identity)
+                    nodes.append(self.define_nodes(node))
+           
         return nodes
 
     def define_edge(self, edge: py2neo.Relationship) -> Dict[str,str]:
@@ -85,7 +107,6 @@ def Plot():
         edges = []
         if sg:
             edges = [self.define_edge(edge) for edge in sg.relationships]
-            edges = list(set(edges))
         return edges
 
     def vis_network(
@@ -178,11 +199,13 @@ def plot(
 ) -> IFrame:
     """Plot a graph, using a query.
 
+    Compatibility wrapper around using the class based plotting.
     Heavy lifting is done via py2neo `to_subgraph` and `neographviz.vis_network`
 
     Example:
-        >>> from neographviz import plot, Graph
-        >>> graph = Graph() # You need a graph at localhos, or pass the uri here.
+        >>> from neographviz import plot
+        >>> from py2neo import Graph
+        >>> graph = Graph() # You need a graph at localhost, or pass the uri here.
         >>> plot(graph)
 
     Args:
