@@ -1,1 +1,6 @@
-site_name: My Docs
+site_name: Neographviz docs
+site_url: https://icfly2.github.io/neographviz/
+nav:
+    - Home: index.md
+    - Viz: Viz.md
+    - About: about.md
