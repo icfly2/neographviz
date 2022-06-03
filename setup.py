@@ -14,6 +14,12 @@ setup(
     author="Ruben Menke",
     author_email="ruben.m.menke@gmail.com",
     url="https://github.com/icfly2/neographviz",
+    project_urls={
+        'Documentation': 'https://icfly2.github.io/neographviz/',
+        'Funding': 'https://www.bankingcircle.com/',
+        'Source': 'https://github.com/icfly2/neographviz',
+        'Tracker': 'https://github.com/icfly2/neographviz/issues',
+    },
     packages=["neographviz"],
     package_data={"neographviz": ["templates/*.html"]},
     extras_require={"app": ["waitress==2.1.1", "flask>=1.1.1"]},
