@@ -11,3 +11,8 @@ theme:
 plugins:
 - search
 - mkdocstrings
+
+
+
+# build with
+# mkdocs build -d ../docs
